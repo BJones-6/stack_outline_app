@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template
 
-from .models import ExampleRecord
+from .models import Trader, Account, Asset, Trade
 
 main = Blueprint("main", __name__)
 
 
 @main.route("/")
 def index():
-    records = ExampleRecord.query.order_by(ExampleRecord.id.desc()).all()
-    return render_template("index.html", records=records)
+    traders = Trader.query.all()
+    return render_template("index.html", traders=traders)
