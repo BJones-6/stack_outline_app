@@ -11,15 +11,35 @@
 </section>
 
 <section>
-  <h2 class="h5">Example Records</h2>
-  {% if records %}
+  <h2 class="h5">Traders</h2>
+  {% if traders %}
     <ul class="list-group">
-      {% for record in records %}
-        <li class="list-group-item">{{ record.title }}</li>
+      {% for trader in traders %}
+        <li class="list-group-item">{{ trader.FirstName }} {{ trader.LastName }} {{ trader.Email }}</li>
+
+        {% if trader.accounts %}
+          <div class="mt-2">
+            <small class="text-muted">Accounts:</small>
+            <ul>
+              {% for account in trader.accounts %}
+                <li>
+                  {{ account.AccountID }} - ${{ account.Balance }}
+
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% else %}
+          <div class="text-muted mt-2">
+            No accounts
+          </div>
+        {% endif %}
+        </li>
       {% endfor %}
+      
     </ul>
   {% else %}
-    <div class="alert alert-info mb-0">No records yet. Add some through the Flask shell or extend routes with a form/API.</div>
+    <div class="alert alert-info">No traders available yet.</div>
   {% endif %}
 </section>
 {% endblock %}
