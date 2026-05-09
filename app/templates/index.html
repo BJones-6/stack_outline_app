@@ -10,6 +10,7 @@
   </p>
 </section>
 
+{#
 <section>
   <h2 class="h5">Traders</h2>
   {% if traders %}
@@ -42,4 +43,142 @@
     <div class="alert alert-info">No traders available yet.</div>
   {% endif %}
 </section>
+
+
+
+
+
+<section>
+    <h2 class="h5">Accounts</h2>
+    {% if accounts %}
+      <ul class="list-group">
+        {% for account in accounts %}
+          <li class="list-group-item">{{ account.AccountID }} {{ account.Balance }}</li>
+
+          {% if }
+      </ul>
+</section>
+{% endblock %}
+#}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ===================== TRADERS ===================== -->
+<section class="mb-4">
+  <h2 class="h5">Traders</h2>
+
+  {% if traders %}
+    <ul class="list-group">
+      {% for trader in traders %}
+        <li class="list-group-item">
+
+          <strong>{{ trader.FirstName }} {{ trader.LastName }}</strong><br>
+          {{ trader.Email }}
+
+          <!-- Accounts under trader -->
+          {% if trader.accounts %}
+            <div class="mt-2">
+              <small class="text-muted">Accounts:</small>
+              <ul>
+                {% for account in trader.accounts %}
+                  <li>
+                    {{ account.AccountID }} - ${{ account.Balance }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% else %}
+            <div class="text-muted mt-2">No accounts</div>
+          {% endif %}
+
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info">No traders available yet.</div>
+  {% endif %}
+</section>
+
+<!-- ===================== ACCOUNTS ===================== -->
+<section class="mb-4">
+  <h2 class="h5">Accounts</h2>
+
+  {% if accounts %}
+    <ul class="list-group">
+      {% for account in accounts %}
+        <li class="list-group-item">
+
+          Account ID: {{ account.AccountID }} <br>
+          Trader ID: {{ account.TraderID }} <br>
+          Balance: ${{ account.Balance }} <br>
+          Status: {{ account.Status }}
+
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info">No accounts available.</div>
+  {% endif %}
+</section>
+
+<!-- ===================== ASSETS ===================== -->
+<section class="mb-4">
+  <h2 class="h5">Assets</h2>
+
+  {% if assets %}
+    <ul class="list-group">
+      {% for asset in assets %}
+        <li class="list-group-item">
+
+          Asset ID: {{ asset.AssetID }} <br>
+          Name: {{ asset.Name }} <br>
+          Type: {{ asset.Type }} <br>
+          Price: ${{ asset.Price }}
+
+          <!-- Trades under asset -->
+          {% if asset.trades %}
+            <div class="mt-2">
+              <small class="text-muted">Trades:</small>
+              <ul>
+                {% for trade in asset.trades %}
+                  <li>
+                    Trade ID: {{ trade.TradeID }} |
+                    Quantity: {{ trade.Quantity }} |
+                    Price: ${{ trade.Price }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% else %}
+            <div class="text-muted mt-2">No trades</div>
+          {% endif %}
+
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info">No assets available.</div>
+  {% endif %}
+</section>
+
 {% endblock %}
