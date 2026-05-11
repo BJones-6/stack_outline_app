@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<form action="{{ url_for('main.create_account') }}" method="POST">
+    <div class="mb-3">
+        <label for="accountid" class="form-label">AccountID</label>
+        <input type="text" class="form-control" id="accountid" aria-describedby="accountid_Help" name="AccountID">
+    </div>
+
+
+
+
+    <div class="mb-3">
+        <label for="traderid" class="form-label">TraderID</label>
+        <input type="text" class="form-control" id="traderid" aria-describedby="first_name_Help" name="TraderID">
+    </div>
+    
+    
+    <div class="mb-3">
+        <label for="balance" class="form-label">Balance</label>
+        <input type="number" class="form-control" id="balance" aria-describedby="balance_Help" name="Balance">
+    </div>
+
+    <div class="mb-3">
+        <label for="status" class="form-label">Account Status</label>
+        <input type="text" class="form-control" id="status" aria-describedby="account_status_Help" name="Status">
+    </div>
+
+   
+
+
+    
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+{% endblock %}

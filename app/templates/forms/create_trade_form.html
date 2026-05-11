@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<form action="{{ url_for('main.create_trade') }}" method="POST">
+    <div class="mb-3">
+        <label for="trade_id" class="form-label">TradeID</label>
+        <input type="text" class="form-control" id="trade_id" aria-describedby="trade_id_Help" name="TradeID">
+    </div>
+
+    <div class="mb-3">
+        <label for="account_id" class="form-label">AcountID</label>
+        <input type="text" class="form-control" id="account_id" aria-describedby="account_id_Help" name="AccountID">
+    </div>
+
+
+
+    <div class="mb-3">
+        <label for="asset_id" class="form-label">AssetID</label>
+        <input type="text" class="form-control" id="asset_id" aria-describedby="asset_id_Help" name="AssetID">
+    </div>
+
+
+    
+
+
+    <div class="mb-3">
+        <label for="trade_type" class="form-label">Trade Type</label>
+        <input type="text" class="form-control" id="trade_type" aria-describedby="trade_type_Help" name="TradeType">
+    </div>
+    
+
+    
+    <div class="mb-3">
+        <label for="quantity" class="form-label">Quantity</label>
+        <input type="number" class="form-control" id="quantity" aria-describedby="quantity_Help" name="Quantity">
+    </div>
+
+
+    <div class="mb-3">
+        <label for="entry_price" class="form-label">Entry Price</label>
+        <input type="number" class="form-control" id="entry_price" aria-describedby="entry_price_Help" name="EntryPrice" step="0.01">
+    </div>
+    
+
+    <div class="mb-3">
+        <label for="trade_status" class="form-label">Trade Status</label>
+        <input type="text" class="form-control" id="trade_status" aria-describedby="trade_status_Help" name="Status">
+    </div>
+
+
+
+
+    
+
+   
+
+
+    
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+{% endblock %}

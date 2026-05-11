@@ -49,3 +49,10 @@ stack_outline_app/
 - SQLite is used out of the box via `DATABASE_URL=sqlite:///app.db`.
 - To switch databases, set `DATABASE_URL` (for example, PostgreSQL/MySQL URI) and install the corresponding driver.
 - Tables are auto-created at startup for this minimal starter (`db.create_all()`).
+
+
+
+
+
+
+I would like to add specific checks or a dropdown in the forms, for example the trade form I would like to have a dropdown of all known assets on the database that way I am not typing the assets out, also maybe checks that you could click like "use asset current price" for the entry price. 

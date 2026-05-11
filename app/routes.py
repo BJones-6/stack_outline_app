@@ -10,27 +10,44 @@ main = Blueprint("main", __name__)
 @main.route("/")
 def index():
     traders = Trader.query.all()
-    return render_template("index.html", traders=traders)
+    accounts = Account.query.all()
+    assets = Asset.query.all()
+    trades = Trade.query.all()
+    return render_template("index.html", traders=traders, accounts=accounts, assets=assets, trades=trades)
 
 
 
 
-@main.route("/trader/create", methods=["POST"])
+# @main.route("/trader/create")
+# def create_trader_form():
+    # return render_template("/forms/create_trader_form.html")
+
+
+
+# Trader Form Route/CRUD Operations
+@main.route("/trader/create", methods=["GET", "POST"])
 def create_trader():
     
+    if request.method == "POST":
 
-    new_trader = Trader(
-        TraderID=request.form["TraderID"],
-        FirstName=request.form["FirstName"],
-        LastName=request.form["LastName"],
-        Email=request.form["Email"],
-        CreationDate=datetime.today().date()
-    )
+        new_trader = Trader(
+            TraderID=request.form["TraderID"],
+            FirstName=request.form["FirstName"],
+            LastName=request.form["LastName"],
+            Email=request.form["Email"],
+            CreationDate=datetime.today().date()
+        )
 
-    db.session.add(new_trader)
-    db.session.commit()
+        db.session.add(new_trader)
+        db.session.commit()
 
-    return redirect(url_for("main.index"))
+        
+
+
+
+        return redirect(url_for("main.index"))
+    
+    return render_template("/forms/create_trader_form.html")
 
 
 @main.route("/trader/delete/<id>")
@@ -80,37 +97,41 @@ def trader_detail(id):
 
 
 
+# Account Table CRUD operations and form route
 
-
-@main.route("/account/create", methods=["POST"])
+@main.route("/account/create", methods=["GET", "POST"])
 def create_account():
 
+    if request.method == "POST":
 
-    new_account = Account(
-        AccountID=request.form["AccountID"],
-        TraderID=request.form["TraderID"],
-        Balance=request.form["Balance"],
-        Status=request.form["Status"],
-        OpenDate=datetime.today().date(),
-        LastUpdated=datetime.today().date()
-    )
+
+        new_account = Account(
+            AccountID=request.form["AccountID"],
+            TraderID=request.form["TraderID"],
+            Balance=request.form["Balance"],
+            Status=request.form["Status"],
+            OpenDate=datetime.today().date(),
+            LastUpdated=datetime.today().date()
+        )
     
         
 
 
 
-    db.session.add(new_account)
-    db.session.commit()
+        db.session.add(new_account)
+        db.session.commit()
 
 
-    return redirect(url_for("main.index"))
+        return redirect(url_for("main.index"))
+    
+    return render_template("/forms/create_account_form.html")
 
 @main.route("/account/delete/<id>")
 def delete_account(id):
     account = Account.query.get_or_404(id)
 
     db.session.delete(account)
-    db.session.commit
+    db.session.commit()
 
     return "Deleted"
 
@@ -143,23 +164,30 @@ def account_detail(id):
 
 
 
+# Asset CRUD operations and form route
 
-@main.route("/asset/create", methods=["POST"])
+@main.route("/asset/create", methods=["GET", "POST"])
 def create_asset():
-    new_asset = Asset(
-        AssetID = request.form["AssetID"],
-        Symbol = request.form["Symbol"],
-        CurrentPrice = request.form["CurrentPrice"],
-        AssetName = request.form["AssetName"],
-        CreationDate = datetime.today().date(),
-        LastUpdated = datetime.today().date()
-    )
+
+    if request.method == "POST":
+
+        new_asset = Asset(
+            AssetID = request.form["AssetID"],
+            Symbol = request.form["Symbol"],
+            CurrentPrice = request.form["CurrentPrice"],
+            AssetName = request.form["AssetName"],
+            CreationDate = datetime.today().date(),
+            LastUpdated = datetime.today().date()
+        )
 
 
-    db.session.add(new_asset)
-    db.session.commit()
+        db.session.add(new_asset)
+        db.session.commit()
 
-    return redirect(url_for("main.index"))
+        return redirect(url_for("main.index"))
+    
+    return render_template("/forms/create_asset_form.html")
+
 
 
 
@@ -186,6 +214,8 @@ def update_asset(id):
 
     asset.LastUpdated = datetime.today().date()
 
+    db.session.commit()
+
     return "Updated"
 
 
@@ -202,27 +232,35 @@ def detail_asset(id):
 
 
 
-@main.route("/trade/create", methods=["POST"])
+# CRUD operations for Trade table
+
+@main.route("/trade/create", methods=["GET", "POST"])
 def create_trade():
-    new_trade = Trade(
-        TradeID = request.form["TradeID"],
-        AccountID = request.form["AccountID"],
-        AssetID = request.form["AssetID"],
-        TradeType = request.form["TradeType"],
-        Quantity = request.form["Quantity"],
-        EntryPrice = request.form["EntryPrice"],
-        ExitPrice = request.form["ExitPrice"],
-        EntryDate = request.form["EntryDate"],
-        ExitDate = request.form["ExitDate"],
-        Status = request.form["Status"],
-        LastUpdated = datetime.today().date()
-    )
+    if request.method == "POST":
 
-    db.session.add(new_trade)
+        new_trade = Trade(
+            TradeID = request.form["TradeID"],
+            AccountID = request.form["AccountID"],
+            AssetID = request.form["AssetID"],
+            TradeType = request.form["TradeType"],
+            Quantity = request.form["Quantity"],
+            EntryPrice = request.form["EntryPrice"],
+            # ExitPrice = request.form["ExitPrice"],
+            EntryDate = datetime.today().date(),
+            # ExitDate = request.form["ExitDate"],
+            Status = request.form["Status"],
+            LastUpdated = datetime.today().date()
+        )
 
-    db.session.commit()
+        db.session.add(new_trade)
 
-    return redirect(url_for("main.index"))
+        db.session.commit()
+
+        return redirect(url_for("main.index"))
+    
+    return render_template("/forms/create_trade_form.html")
+
+
 
 
 @main.route("/trade/delete/<id>")
@@ -248,6 +286,8 @@ def update_trade(id):
     trade.Status = request.form["Status"]
 
     trade.LastUpdated = datetime.today().date()
+
+    db.session.commit()
 
 
 

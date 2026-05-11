@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+<form action="{{ url_for('main.create_trader') }}" method="POST">
+    <div class="mb-3">
+        <label for="traderid" class="form-label">TraderID</label>
+        <input type="text" class="form-control" id="traderid" aria-describedby="first_name_Help" name="TraderID">
+    </div>
+    
+    
+    <div class="mb-3">
+        <label for="first_name" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="first_name" aria-describedby="first_name_Help" name="FirstName">
+    </div>
+
+    <div class="mb-3">
+        <label for="last_name" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="last_name" aria-describedby="last_name_Help" name="LastName">
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="Email">
+    
+    </div>
+
+
+    
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+{% endblock %}

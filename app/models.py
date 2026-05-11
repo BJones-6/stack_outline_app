@@ -71,7 +71,7 @@ class Trade(db.Model):
     ExitDate = db.Column(db.Date)
     Status = db.Column(db.String(10), nullable=False)
     LastUpdated = db.Column(db.Date)
-    Profit_Loss = db.Column(db.Float)
+    # Profit_Loss = db.Column(db.Float)
 
 
     def __repr__(self):

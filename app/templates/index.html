@@ -3,6 +3,10 @@
 {% block title %}Home | Stack Outline App{% endblock %}
 
 {% block content %}
+
+
+
+
 <section class="mb-4">
   <h1 class="h3">Flask + SQLAlchemy + Jinja2 Starter</h1>
   <p class="text-muted mb-0">
@@ -151,10 +155,10 @@
         <li class="list-group-item">
 
           Asset ID: {{ asset.AssetID }} <br>
-          Name: {{ asset.Name }} <br>
-          Type: {{ asset.Type }} <br>
-          Price: ${{ asset.Price }}
-
+          Name: {{ asset.AssetName }} <br>
+          Symbol: {{ asset.Symbol }} <br>
+          Price: ${{ asset.CurrentPrice }}
+          
           <!-- Trades under asset -->
           {% if asset.trades %}
             <div class="mt-2">
@@ -164,7 +168,7 @@
                   <li>
                     Trade ID: {{ trade.TradeID }} |
                     Quantity: {{ trade.Quantity }} |
-                    Price: ${{ trade.Price }}
+                    Price: ${{ trade.EntryPrice }}
                   </li>
                 {% endfor %}
               </ul>
@@ -172,7 +176,7 @@
           {% else %}
             <div class="text-muted mt-2">No trades</div>
           {% endif %}
-
+          
         </li>
       {% endfor %}
     </ul>

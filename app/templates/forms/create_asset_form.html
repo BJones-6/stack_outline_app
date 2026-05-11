@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<form action="{{ url_for('main.create_asset') }}" method="POST">
+    <div class="mb-3">
+        <label for="assetid" class="form-label">AssetID</label>
+        <input type="text" class="form-control" id="assetid" aria-describedby="assetid_Help" name="AssetID">
+    </div>
+
+
+    <div class="mb-3">
+        <label for="symbol" class="form-label">Asset Symbol</label>
+        <input type="text" class="form-control" id="symbol" aria-describedby="symbol_Help" name="Symbol">
+    </div>
+
+
+    <div class="mb-3">
+        <label for="asset_name" class="form-label">Asset Name</label>
+        <input type="text" class="form-control" id="asset_name" aria-describedby="asset_name_Help" name="AssetName">
+    </div>
+    
+    
+    <div class="mb-3">
+        <label for="current_price" class="form-label">Current Price</label>
+        <input type="number" class="form-control" id="current_price" aria-describedby="current_price_Help" name="CurrentPrice" step="0.01">
+    </div>
+
+    
+
+   
+
+
+    
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+
+{% endblock %}
