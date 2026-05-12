@@ -1,9 +1,12 @@
-from flask import Blueprint, render_template
-from flask import request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .extensions import db
 from datetime import datetime
 
+from .functions import update_trade_account
+
 from .models import Trader, Account, Asset, Trade
+
+from decimal import Decimal
 
 main = Blueprint("main", __name__)
 
@@ -50,7 +53,7 @@ def create_trader():
     return render_template("/forms/create_trader_form.html")
 
 
-@main.route("/trader/delete/<id>")
+@main.route("/trader/delete/<id>", methods=["POST"])
 def delete_trader(id):
 
 
@@ -58,8 +61,10 @@ def delete_trader(id):
     db.session.delete(trader)
     db.session.commit()
 
+    flash("Trader Deleted Sucessfully", "success")
 
-    return "Deleted"
+
+    return redirect(url_for("main.index"))
 
 
 @main.route("/trader/update/<id>", methods=["POST"])
@@ -126,14 +131,16 @@ def create_account():
     
     return render_template("/forms/create_account_form.html")
 
-@main.route("/account/delete/<id>")
+@main.route("/account/delete/<id>", methods=["POST"])
 def delete_account(id):
     account = Account.query.get_or_404(id)
 
     db.session.delete(account)
     db.session.commit()
 
-    return "Deleted"
+    flash("Account Sucessfully Deleted", "success")
+
+    return redirect(url_for("main.index"))
 
 
 @main.route("/account/update/<id>", methods=["POST"])
@@ -191,14 +198,16 @@ def create_asset():
 
 
 
-@main.route("/asset/delete/<id>")
+@main.route("/asset/delete/<id>", methods=["POST"])
 def delete_asset(id):
     asset = Asset.query.get_or_404(id)
 
     db.session.delete(asset)
     db.session.commit()
 
-    return "Deleted"
+    flash("Asset Deleted Sucessfully", "success")
+
+    return redirect(url_for("main.index"))
 
 
 
@@ -244,11 +253,11 @@ def create_trade():
             AssetID = request.form["AssetID"],
             TradeType = request.form["TradeType"],
             Quantity = request.form["Quantity"],
-            EntryPrice = request.form["EntryPrice"],
+            EntryPrice = Decimal(request.form.get("EntryPrice")),
             # ExitPrice = request.form["ExitPrice"],
             EntryDate = datetime.today().date(),
             # ExitDate = request.form["ExitDate"],
-            Status = request.form["Status"],
+            Status = "Open",
             LastUpdated = datetime.today().date()
         )
 
@@ -263,7 +272,7 @@ def create_trade():
 
 
 
-@main.route("/trade/delete/<id>")
+@main.route("/trade/delete/<id>", methods=["POST"])
 def delete_trade(id):
 
     trade = Trade.query.get_or_404(id)
@@ -271,27 +280,41 @@ def delete_trade(id):
     db.session.delete(trade)
     db.session.commit()
 
-    return "Deleted"
-
-
-
-@main.route("/trade/update/<id>", methods=["POST"])
-def update_trade(id):
-    trade = Trade.query.get_or_404(id)
-
-    trade.ExitPrice = request.form["ExitPrice"]
-
-    trade.ExitDate = datetime.today().date()
-
-    trade.Status = request.form["Status"]
-
-    trade.LastUpdated = datetime.today().date()
-
-    db.session.commit()
-
-
+    flash("Trade Deleted Sucessfully", "success")
 
     return redirect(url_for("main.index"))
+
+
+
+
+
+@main.route("/trade/update/<id>", methods=["GET", "POST"])
+def update_trade(id):
+
+    trade = Trade.query.get_or_404(id)
+
+    if request.method == "POST":
+
+        
+        exitprice = request.form.get("ExitPrice")
+
+        if exitprice:
+            trade.ExitPrice = Decimal(exitprice)
+            trade.Status = "Closed"
+            update_trade_account(trade)
+
+
+        trade.LastUpdated = datetime.today().date()
+
+        db.session.commit()
+
+        flash("Sucessfully Updated Trades Table and Account Balance", "success")
+
+
+
+        return redirect(url_for("main.index"))
+    
+    return render_template("/forms/update_trade_form.html", trade=trade)
 
 
 

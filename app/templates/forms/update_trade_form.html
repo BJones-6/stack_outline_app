@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+
+
+
+{% block content %}
+
+<form action="{{ url_for('main.update_trade', id=trade.TradeID) }}" method="POST">
+
+    
+    
+
+
+    <div class="mb-3">
+        <label for="exit_price" class="form-label">Exit Price</label>
+        <input type="text" class="form-control" id="exit_price" aria-describedby="exit_price_Help" step="0.01" name="ExitPrice" placeholder="">
+    </div>
+    
+
+    
+    
+
+
+
+    
+
+   
+
+
+    
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+
+{% endblock %}

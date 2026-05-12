@@ -1,4 +1,5 @@
 from .extensions import db
+from sqlalchemy import Numeric
 
 
 class Trader(db.Model):
@@ -25,7 +26,7 @@ class Account(db.Model):
 
     AccountID = db.Column(db.String(8), primary_key=True)
     TraderID = db.Column(db.String(8), db.ForeignKey('Trader.TraderID'), nullable=False)
-    Balance = db.Column(db.Float, nullable=False)
+    Balance = db.Column(db.Numeric(10, 2), nullable=False)
     Status = db.Column(db.String(10), nullable=False)
     OpenDate = db.Column(db.Date, nullable=False)
     LastUpdated = db.Column(db.Date)
@@ -44,7 +45,7 @@ class Asset(db.Model):
 
     AssetID = db.Column(db.String(8), primary_key=True)
     Symbol = db.Column(db.String(10), unique=True, nullable=False)
-    CurrentPrice = db.Column(db.Float, nullable=False)
+    CurrentPrice = db.Column(db.Numeric(10, 2), nullable=False)
     AssetName = db.Column(db.String(50), nullable=False)
     CreationDate = db.Column(db.Date, nullable=False)
     LastUpdated = db.Column(db.Date)
@@ -65,8 +66,8 @@ class Trade(db.Model):
     AssetID = db.Column(db.String(8), db.ForeignKey('Asset.AssetID'), nullable=False)
     TradeType = db.Column(db.String(8), nullable=False)
     Quantity = db.Column(db.Integer, nullable=False)
-    EntryPrice = db.Column(db.Float, nullable=False)
-    ExitPrice = db.Column(db.Float)
+    EntryPrice = db.Column(db.Numeric(10, 2), nullable=False)
+    ExitPrice = db.Column(db.Numeric(10, 2))
     EntryDate = db.Column(db.Date, nullable=False)
     ExitDate = db.Column(db.Date)
     Status = db.Column(db.String(10), nullable=False)

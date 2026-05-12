@@ -14,7 +14,7 @@
       <div class="container">
         <a class="navbar-brand" href="{{ url_for('main.index') }}">Stack Outline App</a>
       </div>
-
+      
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
           <a class="nav-link" href="{{url_for('main.create_trader')}}">Add Trader</a>
@@ -28,11 +28,30 @@
           <a class="nav-link" href="{{url_for('main.create_asset')}}">Add Asset</a>
         </li>
 
+
+       
+        
         <li class="nav-item">
           <a class="nav-link" href="{{url_for('main.create_trade')}}">Add Trade</a>
         </li>
       </ul>
     </nav>
+    
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        
+          {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissable fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+          {% endfor %}
+
+        
+      {% endif %}
+
+    {% endwith %}
 
     <main class="container py-4">
       {% block content %}{% endblock %}
@@ -41,3 +60,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
+
+
+
+<!--  <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Trade Dropdown
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{url_for('main.create_trade')}}">Create Trade</a></li>
+          
+            
+          </ul>
+        </li>
+-->

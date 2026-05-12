@@ -114,10 +114,15 @@
           {% else %}
             <div class="text-muted mt-2">No accounts</div>
           {% endif %}
-
+          <br>
+          <form action="{{ url_for('main.delete_trader', id=trader.TraderID )}}" method="POST">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
         </li>
       {% endfor %}
     </ul>
+
+    
   {% else %}
     <div class="alert alert-info">No traders available yet.</div>
   {% endif %}
@@ -135,7 +140,14 @@
           Account ID: {{ account.AccountID }} <br>
           Trader ID: {{ account.TraderID }} <br>
           Balance: ${{ account.Balance }} <br>
-          Status: {{ account.Status }}
+          Status: {{ account.Status }} <br>
+
+        
+
+          <br>
+          <form action="{{ url_for('main.delete_account', id=account.AccountID )}}" method="POST">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
 
         </li>
       {% endfor %}
@@ -176,6 +188,11 @@
           {% else %}
             <div class="text-muted mt-2">No trades</div>
           {% endif %}
+        
+        <br>
+        <form action="{{ url_for('main.delete_asset', id=asset.AssetID )}}" method="POST">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
           
         </li>
       {% endfor %}
@@ -185,4 +202,60 @@
   {% endif %}
 </section>
 
+
+
+
+
+
+<!-- Trades -->
+<section class="mb-4">
+  <h2 class="h5">Trades</h2>
+
+  {% if trades %}
+    <ul class="list-group">
+      {% for trade in trades %}
+        <li class="list-group-item">
+
+          Trade ID: {{ trade.TradeID }} <br>
+          Asset ID: {{ trade.AssetID }}<br>
+          Account ID: {{ trade.AccountID }}<br>
+          Trade Type: {{ trade.TradeType }} <br>
+          Quantity: {{ trade.Quantity }} <br>
+          Entry Price: ${{ trade.EntryPrice }}<br>
+
+
+          {% if trade.ExitPrice %}
+
+            Exit Price: {{ trade.ExitPrice }}<br>
+
+          {% endif %}
+
+
+          Entry Date: {{ trade.EntryDate }}<br>
+
+          {% if trade.ExitDate %}
+
+            Exit Date: {{ trade.ExitDate }}<br>
+
+          {% endif %}
+
+          Trade Status: {{ trade.Status }}<br>
+
+          <div class="d-flex align-items-center mt-3">
+            <br>
+            <a href="{{url_for('main.update_trade', id=trade.TradeID)}}" class="btn btn-primary btn-sm mb-0">Edit</a>
+
+            <form action="{{ url_for('main.delete_trade', id=trade.TradeID )}}" method="POST" class="ms-auto">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+
+          </div>
+          
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info">No Trades available.</div>
+  {% endif %}
+</section>
 {% endblock %}
