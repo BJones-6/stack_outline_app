@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+
+
+{% block content %}
+
+<form action="{{ url_for('main.update_account', id=account.AccountID) }}" method="POST">
+
+    
+    
+
+
+    <div class="mb-3">
+        <label for="account_status" class="form-label">Account Status</label>
+        <select class="form-select" id="status" name="Status" required>
+            <option value="">-- Select Account Status --</option>
+            <option value="Active">Active</option>
+            <option value="Suspended">Suspended</option>
+        </select>
+
+        
+    </div>
+    
+
+    
+    
+
+
+
+    
+
+   
+
+
+    
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Account Summary{% endblock %}
+
+
+{% block content %}
+
+<section class="mb-4">
+  <h2 class="h5">Summary for Account: {{ account.AccountID }}</h2>
+  <div class="container">TraderID for this Account: {{ account.TraderID }}</div>
+
+  <br>
+
+
+  <ul class="list-group mb-4">
+    <li class="list-group-item">
+        Total P&L: ${{ total_pnl }}
+    </li>
+
+    <li class="list-group-item">
+        Total Trades: {{ total_trades }}
+    </li>
+    
+    <li class="list-group-item">
+        Winning Trades: {{ winning_trades }}
+    </li>
+
+    <li class="list-group-item">
+        Win Rate: {{ win_rate }}
+    </li>
+
+
+  </ul>
+
+
+  <h4 class="h4">Closed Trades</h4>
+
+  <ul class="list-group">
+    {% for trade in trades %}
+
+        <li class="list-group-item">
+            Trade: {{ trade.TradeID }}
+        </li>
+
+
+    {% endfor %}
+  </ul>
+
+
+  
+</section>
+
+
+{% endblock %}

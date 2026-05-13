@@ -10,7 +10,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="account_id" class="form-label">AcountID</label>
+        <label for="account_id" class="form-label">AccountID</label>
         <input type="text" class="form-control" id="account_id" aria-describedby="account_id_Help" name="AccountID">
     </div>
 
@@ -26,8 +26,14 @@
 
 
     <div class="mb-3">
-        <label for="trade_type" class="form-label">Trade Type</label>
-        <input type="text" class="form-control" id="trade_type" aria-describedby="trade_type_Help" name="TradeType">
+        <label for="type" class="form-label">Trade Type</label>
+        <select class="form-select" id="type" name="TradeType" required>
+            <option value="">-- Select Trade Type --</option>
+            <option value="Long">Long</option>
+            <option value="Short">Short</option>
+        </select>
+
+        
     </div>
     
 

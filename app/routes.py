@@ -1,12 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .extensions import db
 from datetime import datetime
-
 from .functions import update_trade_account
-
 from .models import Trader, Account, Asset, Trade
-
 from decimal import Decimal
+from sqlalchemy import func, case, and_, or_
 
 main = Blueprint("main", __name__)
 
@@ -84,10 +82,10 @@ def update_trader(id):
 
 
 
-@main.route("/trader/<id>")
-def trader_detail(id):
-    trader = Trader.query.get_or_404(id)
-    return render_template("trader.html", trader=trader)
+# @main.route("/trader/<id>")
+# def trader_detail(id):
+    # trader = Trader.query.get_or_404(id)
+    # return render_template("trader.html", trader=trader)
 
 
 
@@ -143,23 +141,80 @@ def delete_account(id):
     return redirect(url_for("main.index"))
 
 
-@main.route("/account/update/<id>", methods=["POST"])
+@main.route("/account/update/<id>", methods=["GET", "POST"])
 def update_account(id):
     account = Account.query.get_or_404(id)
 
-    account.Status = request.form["Status"]
-
-    db.session.commit()
-
-    return "Updated"
+    if request.method == "POST":
 
 
+        account.Status = request.form["Status"]
 
-@main.route("/account/<id>")
-def account_detail(id):
+        db.session.commit()
+
+        return redirect(url_for("main.index"))
+    
+    return render_template("/forms/update_account_form.html", account=account)
+
+
+@main.route ("/account/summary/<id>", methods=["GET"])
+def account_summary(id):
     account = Account.query.get_or_404(id)
 
-    return render_template("account.html", account=account)
+    total_trades = db.session.query(func.count(Trade.TradeID)).filter(Trade.AccountID == id, Trade.Status == "Closed").scalar() or 0
+
+    winning_trades = db.session.query(
+        func.count(Trade.TradeID)
+    ).filter(
+        Trade.AccountID == id,
+        Trade.Status == "Closed",
+        or_(
+            and_(Trade.TradeType == "Long",
+                 Trade.ExitPrice > Trade.EntryPrice),
+            and_(Trade.TradeType == "Short", 
+                Trade.ExitPrice < Trade.EntryPrice)
+        )
+    ).scalar() or 0
+
+    total_pnl = db.session.query(
+        func.sum(
+            case(
+                (
+                    Trade.TradeType == "Long",
+                    (Trade.ExitPrice - Trade.EntryPrice) * Trade.Quantity
+                ),
+                else_=(Trade.EntryPrice - Trade.ExitPrice) * Trade.Quantity
+            )
+        )
+    ).filter(
+        Trade.AccountID == id,
+        Trade.Status == "Closed"
+    ).scalar() or 0
+
+    win_rate = (winning_trades / total_trades * 100) if total_trades else 0
+
+    trades = Trade.query.filter_by(
+        AccountID=id,
+        Status="Closed"
+    ).all()
+
+
+
+    return render_template(
+        "account_summary.html",
+        account=account,
+        trades=trades,
+        total_pnl=total_pnl,
+        total_trades=total_trades,
+        winning_trades=winning_trades,
+        win_rate=win_rate
+    )
+
+# @main.route("/account/<id>")
+# def account_detail(id):
+    # account = Account.query.get_or_404(id)
+
+    # return render_template("account.html", account=account)
 
 
 
@@ -228,11 +283,12 @@ def update_asset(id):
     return "Updated"
 
 
-@main.route("/asset/<id>")
-def detail_asset(id):
-    asset = Asset.query.get_or_404(id)
+# @main.route("/asset/<id>")
+# def detail_asset(id):
+    # asset = Asset.query.get_or_404(id)
 
-    return render_template("asset.html", asset=asset)
+    
+    # return render_template("asset.html", asset=asset)
 
 
 
@@ -306,6 +362,10 @@ def update_trade(id):
 
         trade.LastUpdated = datetime.today().date()
 
+        if not trade.ExitDate:
+            trade.ExitDate = datetime.today().date()
+
+
         db.session.commit()
 
         flash("Sucessfully Updated Trades Table and Account Balance", "success")
@@ -319,12 +379,11 @@ def update_trade(id):
 
 
 
-@main.route("/trade/<id>")
-def detail_trade(id):
-    trade = Trade.query.get_or_404(id)
+# @main.route("/trade/<id>")
+# def detail_trade(id):
+    # trade = Trade.query.get_or_404(id)
 
-    return render_template("trade.html", trade=trade)
-
+    # return render_template("trade.html", trade=trade)
 
 
 

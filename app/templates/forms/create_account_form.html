@@ -24,8 +24,14 @@
     </div>
 
     <div class="mb-3">
-        <label for="status" class="form-label">Account Status</label>
-        <input type="text" class="form-control" id="status" aria-describedby="account_status_Help" name="Status">
+        <label for="account_status" class="form-label">Account Status</label>
+        <select class="form-select" id="status" name="Status" required>
+            <option value="">-- Select Account Status --</option>
+            <option value="Active">Active</option>
+            <option value="Suspended">Suspended</option>
+        </select>
+
+        
     </div>
 
    

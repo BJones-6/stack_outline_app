@@ -12,7 +12,7 @@ class Trader(db.Model):
     Email = db.Column(db.String(75), nullable=False, unique=True)
 
 
-    accounts = db.relationship('Account', backref='trader')
+    accounts = db.relationship('Account', backref='trader', cascade="all, delete-orphan")
 
 
 
@@ -25,14 +25,14 @@ class Account(db.Model):
     __tablename__ = "Account"
 
     AccountID = db.Column(db.String(8), primary_key=True)
-    TraderID = db.Column(db.String(8), db.ForeignKey('Trader.TraderID'), nullable=False)
+    TraderID = db.Column(db.String(8), db.ForeignKey('Trader.TraderID', ondelete="CASCADE"), nullable=False)
     Balance = db.Column(db.Numeric(10, 2), nullable=False)
     Status = db.Column(db.String(10), nullable=False)
     OpenDate = db.Column(db.Date, nullable=False)
     LastUpdated = db.Column(db.Date)
 
 
-    trades = db.relationship('Trade', backref='account')
+    trades = db.relationship('Trade', backref='account', cascade="all, delete-orphan")
 
 
     def __repr__(self):
@@ -52,7 +52,7 @@ class Asset(db.Model):
 
 
 
-    trades = db.relationship('Trade', backref='asset')
+    trades = db.relationship('Trade', backref='asset', cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Asset {self.AssetID}>"
@@ -62,8 +62,8 @@ class Trade(db.Model):
     __tablename__ = "Trade"
 
     TradeID = db.Column(db.String(10), primary_key=True)
-    AccountID = db.Column(db.String(8), db.ForeignKey('Account.AccountID'), nullable=False)
-    AssetID = db.Column(db.String(8), db.ForeignKey('Asset.AssetID'), nullable=False)
+    AccountID = db.Column(db.String(8), db.ForeignKey('Account.AccountID', ondelete="CASCADE"), nullable=False)
+    AssetID = db.Column(db.String(8), db.ForeignKey('Asset.AssetID', ondelete="CASCADE"), nullable=False)
     TradeType = db.Column(db.String(8), nullable=False)
     Quantity = db.Column(db.Integer, nullable=False)
     EntryPrice = db.Column(db.Numeric(10, 2), nullable=False)
