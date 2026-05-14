@@ -1,24 +1,24 @@
 {% extends 'base.html' %}
-
+{% block title %}Create Trade{% endblock %}
 
 {% block content %}
 
 <form action="{{ url_for('main.create_trade') }}" method="POST">
     <div class="mb-3">
         <label for="trade_id" class="form-label">TradeID</label>
-        <input type="text" class="form-control" id="trade_id" aria-describedby="trade_id_Help" name="TradeID">
+        <input type="text" class="form-control" id="trade_id" aria-describedby="trade_id_Help" name="TradeID" placeholder="">
     </div>
 
     <div class="mb-3">
         <label for="account_id" class="form-label">AccountID</label>
-        <input type="text" class="form-control" id="account_id" aria-describedby="account_id_Help" name="AccountID">
+        <input type="text" class="form-control" id="account_id" aria-describedby="account_id_Help" name="AccountID" placeholder="">
     </div>
 
 
 
     <div class="mb-3">
         <label for="asset_id" class="form-label">AssetID</label>
-        <input type="text" class="form-control" id="asset_id" aria-describedby="asset_id_Help" name="AssetID">
+        <input type="text" class="form-control" id="asset_id" aria-describedby="asset_id_Help" name="AssetID" placeholder="">
     </div>
 
 
@@ -40,13 +40,13 @@
     
     <div class="mb-3">
         <label for="quantity" class="form-label">Quantity</label>
-        <input type="number" class="form-control" id="quantity" aria-describedby="quantity_Help" name="Quantity">
+        <input type="number" class="form-control" id="quantity" aria-describedby="quantity_Help" name="Quantity" placeholder="">
     </div>
 
 
     <div class="mb-3">
         <label for="entry_price" class="form-label">Entry Price</label>
-        <input type="number" class="form-control" id="entry_price" aria-describedby="entry_price_Help" name="EntryPrice" step="0.01">
+        <input type="number" class="form-control" id="entry_price" aria-describedby="entry_price_Help" name="EntryPrice" step="0.01" placeholder="">
     </div>
     
 

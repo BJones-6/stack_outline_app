@@ -5,6 +5,7 @@ from .functions import update_trade_account
 from .models import Trader, Account, Asset, Trade
 from decimal import Decimal
 from sqlalchemy import func, case, and_, or_
+from sqlalchemy.exc import IntegrityError
 
 main = Blueprint("main", __name__)
 
@@ -31,20 +32,33 @@ def create_trader():
     
     if request.method == "POST":
 
+        trader_id = request.form.get("TraderID")
+
+
+        first = request.form.get("FirstName")
+        last = request.form.get("LastName")
+        email = request.form.get("Email")
+
+        if not all([trader_id, first, last, email]):
+            flash("All fields are required.", "danger")
+            return redirect(url_for("main.create_trader"))
+
         new_trader = Trader(
-            TraderID=request.form["TraderID"],
-            FirstName=request.form["FirstName"],
-            LastName=request.form["LastName"],
-            Email=request.form["Email"],
+            TraderID=trader_id,
+            FirstName=first,
+            LastName=last,
+            Email=email,
             CreationDate=datetime.today().date()
         )
 
-        db.session.add(new_trader)
-        db.session.commit()
-
-        
-
-
+        try:
+            db.session.add(new_trader)
+            db.session.commit()
+            flash("Trader Created Successfully", "success")
+        except IntegrityError:
+            db.session.rollback()
+            flash("TraderID or Email must be unique.", "danger")
+            return redirect(url_for("main.create_trader"))
 
         return redirect(url_for("main.index"))
     
@@ -64,7 +78,7 @@ def delete_trader(id):
 
     return redirect(url_for("main.index"))
 
-
+"""
 @main.route("/trader/update/<id>", methods=["POST"])
 def update_trader(id):
 
@@ -79,7 +93,7 @@ def update_trader(id):
     db.session.commit()
 
     return "Updated"
-
+"""
 
 
 # @main.route("/trader/<id>")
@@ -107,25 +121,51 @@ def create_account():
 
     if request.method == "POST":
 
+        account_id = request.form.get("AccountID")
+        trader_id = request.form.get("TraderID")
+        balance_raw = request.form.get("Balance")
+        status = request.form.get("Status")
+
+        if not all([account_id, trader_id, balance_raw, status]):
+            flash("All fields are required.", "danger")
+            return redirect(url_for("main.create_account"))
+
+        try:
+            balance = Decimal(balance_raw)
+        except:
+            flash("Balance must be a valid number.", "danger")
+            return redirect(url_for("main.create_account"))
+
+        if balance < 0:
+            flash("Balance cannot be negative.", "danger")
+            return redirect(url_for("main.create_account"))
+
+        
+        trader = Trader.query.get(trader_id)
+        if not trader:
+            flash("Trader does not exist.", "danger")
+            return redirect(url_for("main.create_account"))
 
         new_account = Account(
-            AccountID=request.form["AccountID"],
-            TraderID=request.form["TraderID"],
-            Balance=request.form["Balance"],
-            Status=request.form["Status"],
+            AccountID=account_id,
+            TraderID=trader_id,
+            Balance=balance,
+            Status=status,
             OpenDate=datetime.today().date(),
             LastUpdated=datetime.today().date()
         )
-    
-        
 
-
-
-        db.session.add(new_account)
-        db.session.commit()
-
+        try:
+            db.session.add(new_account)
+            db.session.commit()
+            flash("Account Created Successfully", "success")
+        except IntegrityError:
+            db.session.rollback()
+            flash("AccountID must be unique.", "danger")
+            return redirect(url_for("main.create_account"))
 
         return redirect(url_for("main.index"))
+
     
     return render_template("/forms/create_account_form.html")
 
@@ -148,7 +188,7 @@ def update_account(id):
     if request.method == "POST":
 
 
-        account.Status = request.form["Status"]
+        account.Status = request.form.get("Status")
 
         db.session.commit()
 
@@ -233,18 +273,42 @@ def create_asset():
 
     if request.method == "POST":
 
+        asset_id = request.form.get("AssetID")
+        symbol = request.form.get("Symbol")
+        name = request.form.get("AssetName")
+        price_raw = request.form.get("CurrentPrice")
+
+        if not all([asset_id, symbol, name, price_raw]):
+            flash("All fields are required.", "danger")
+            return redirect(url_for("main.create_asset"))
+
+        try:
+            price = Decimal(price_raw)
+        except:
+            flash("Price must be a valid number.", "danger")
+            return redirect(url_for("main.create_asset"))
+
+        if price <= 0:
+            flash("Price must be positive.", "danger")
+            return redirect(url_for("main.create_asset"))
+
         new_asset = Asset(
-            AssetID = request.form["AssetID"],
-            Symbol = request.form["Symbol"],
-            CurrentPrice = request.form["CurrentPrice"],
-            AssetName = request.form["AssetName"],
-            CreationDate = datetime.today().date(),
-            LastUpdated = datetime.today().date()
+            AssetID=asset_id,
+            Symbol=symbol,
+            AssetName=name,
+            CurrentPrice=price,
+            CreationDate=datetime.today().date(),
+            LastUpdated=datetime.today().date()
         )
 
-
-        db.session.add(new_asset)
-        db.session.commit()
+        try:
+            db.session.add(new_asset)
+            db.session.commit()
+            flash("Asset Created Successfully", "success")
+        except IntegrityError:
+            db.session.rollback()
+            flash("AssetID or Symbol must be unique.", "danger")
+            return redirect(url_for("main.create_asset"))
 
         return redirect(url_for("main.index"))
     
@@ -265,7 +329,7 @@ def delete_asset(id):
     return redirect(url_for("main.index"))
 
 
-
+"""
 @main.route("/asset/update/<id>", methods=["POST"])
 def update_asset(id):
     asset = Asset.query.get_or_404(id)
@@ -281,7 +345,7 @@ def update_asset(id):
     db.session.commit()
 
     return "Updated"
-
+"""
 
 # @main.route("/asset/<id>")
 # def detail_asset(id):
@@ -303,25 +367,81 @@ def update_asset(id):
 def create_trade():
     if request.method == "POST":
 
+
+
+        trade_id = request.form.get("TradeID")
+        account_id = request.form.get("AccountID")
+        asset_id = request.form.get("AssetID")
+        trade_type = request.form.get("TradeType")
+        quantity_raw = request.form.get("Quantity")
+        entry_price_raw = request.form.get("EntryPrice")
+
+        if not all([trade_id, account_id, asset_id, trade_type, quantity_raw, entry_price_raw]):
+            flash("All fields are required.", "danger")
+            return redirect(url_for("main.create_trade"))
+
+        try:
+            quantity = int(quantity_raw)
+            entry_price = Decimal(entry_price_raw)
+        except:
+            flash("Quantity and Entry Price must be valid numbers.", "danger")
+            return redirect(url_for("main.create_trade"))
+
+        if quantity <= 0:
+            flash("Quantity must be positive.", "danger")
+            return redirect(url_for("main.create_trade"))
+
+        if entry_price <= 0:
+            flash("Entry price must be positive.", "danger")
+            return redirect(url_for("main.create_trade"))
+
+        if trade_type not in ["Long", "Short"]:
+            flash("Invalid trade type.", "danger")
+            return redirect(url_for("main.create_trade"))
+
+        # Foreign key checks
+        account = Account.query.get(account_id)
+
+        if not account:
+            flash("Account does not exist.", "danger")
+            return redirect(url_for("main.create_trade"))
+        
+        if account.Status == "Suspended":
+            flash("Suspended Accounts cannot place trades", "danger")
+            return redirect(url_for("main.create_trade"))
+        
+
+
+        if not Asset.query.get(asset_id):
+            flash("Asset does not exist.", "danger")
+            return redirect(url_for("main.create_trade"))
+        
+
+
+
         new_trade = Trade(
-            TradeID = request.form["TradeID"],
-            AccountID = request.form["AccountID"],
-            AssetID = request.form["AssetID"],
-            TradeType = request.form["TradeType"],
-            Quantity = request.form["Quantity"],
-            EntryPrice = Decimal(request.form.get("EntryPrice")),
-            # ExitPrice = request.form["ExitPrice"],
-            EntryDate = datetime.today().date(),
-            # ExitDate = request.form["ExitDate"],
-            Status = "Open",
-            LastUpdated = datetime.today().date()
+            TradeID=trade_id,
+            AccountID=account_id,
+            AssetID=asset_id,
+            TradeType=trade_type,
+            Quantity=quantity,
+            EntryPrice=entry_price,
+            EntryDate=datetime.today().date(),
+            Status="Open",
+            LastUpdated=datetime.today().date()
         )
 
-        db.session.add(new_trade)
-
-        db.session.commit()
-
+        try:
+            db.session.add(new_trade)
+            db.session.commit()
+            flash("Trade Created Successfully", "success")
+        except IntegrityError:
+            db.session.rollback()
+            flash("TradeID must be unique.", "danger")
+            return redirect(url_for("main.create_trade"))
+        
         return redirect(url_for("main.index"))
+
     
     return render_template("/forms/create_trade_form.html")
 
@@ -352,23 +472,47 @@ def update_trade(id):
     if request.method == "POST":
 
         
-        exitprice = request.form.get("ExitPrice")
+        exitprice_raw = request.form.get("ExitPrice")
 
-        if exitprice:
-            trade.ExitPrice = Decimal(exitprice)
+        if exitprice_raw:
+            
+            try:
+                exitprice = Decimal(exitprice_raw)
+            except:
+                flash("Exit Price must be a valid number", "danger")
+                return redirect(url_for("main.update_trade", id=id))
+            
+            if exitprice < 0:
+                flash("Exit Price cannot be negative", "danger")
+                return redirect(url_for("main.update_trade", id=id))
+            
+            trade.ExitPrice = exitprice
             trade.Status = "Closed"
             update_trade_account(trade)
 
+            account = Account.query.get(trade.AccountID)
+
+            if account.Balance <= 0:
+                account.Status = "Suspended"
+            
+
+        
+        
+        
+
+            if not trade.ExitDate:
+                trade.ExitDate = datetime.today().date()
 
         trade.LastUpdated = datetime.today().date()
 
-        if not trade.ExitDate:
-            trade.ExitDate = datetime.today().date()
+        try:
 
-
-        db.session.commit()
-
-        flash("Sucessfully Updated Trades Table and Account Balance", "success")
+            db.session.commit()
+            flash("Sucessfully Updated Trades Table and Account Balance", "success")
+        except:
+            db.session.rollback()
+            flash("Something went wrong", "danger")
+            return redirect(url_for("main.update_trade"))
 
 
 

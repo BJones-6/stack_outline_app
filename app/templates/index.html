@@ -49,7 +49,8 @@
         <li class="list-group-item">
 
           <strong>{{ trader.FirstName }} {{ trader.LastName }}</strong><br>
-          {{ trader.Email }}
+          TraderID: {{ trader.TraderID }}<br>
+          Trader Email: {{ trader.Email }}<br>
 
           <!-- Accounts under trader -->
           {% if trader.accounts %}
@@ -58,7 +59,7 @@
               <ul>
                 {% for account in trader.accounts %}
                   <li>
-                    {{ account.AccountID }} - ${{ account.Balance }}
+                    {{ account.AccountID }} - ${{ account.Balance }} - {{ account.Status }}
                   </li>
                 {% endfor %}
               </ul>
@@ -95,6 +96,7 @@
           Trader ID: {{ account.TraderID }} <br>
           Balance: ${{ account.Balance }} <br>
           Status: {{ account.Status }} <br>
+          Open Date: {{ account.OpenDate }}<br>
 
           {% if account.trades %}
             <div class="mt-2">
@@ -145,7 +147,9 @@
           Asset ID: {{ asset.AssetID }} <br>
           Name: {{ asset.AssetName }} <br>
           Symbol: {{ asset.Symbol }} <br>
-          Price: ${{ asset.CurrentPrice }}
+          Price: ${{ asset.CurrentPrice }} <br>
+          Creation Date: {{ asset.CreationDate }} <br>
+          Last Updated: {{ asset.LastUpdated }} <br>
           
           <!-- Trades under asset -->
           {% if asset.trades %}
@@ -219,6 +223,8 @@
           {% endif %}
 
           Trade Status: {{ trade.Status }}<br>
+
+          Last Updated: {{ trade.LastUpdated }}<br>
 
           <div class="d-flex align-items-center mt-3">
             <br>

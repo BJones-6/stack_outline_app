@@ -36,14 +36,18 @@
   <h4 class="h4">Closed Trades</h4>
 
   <ul class="list-group">
-    {% for trade in trades %}
+    {% if trades %}
+        {% for trade in trades %}
 
-        <li class="list-group-item">
-            Trade: {{ trade.TradeID }}
-        </li>
+            <li class="list-group-item">
+                Trade: {{ trade.TradeID }}
+            </li>
 
 
-    {% endfor %}
+        {% endfor %}
+    {% else %}
+        <div class="text-muted mt-2">No trades</div>
+    {% endif %}
   </ul>
 
 
